@@ -5,7 +5,7 @@ import UserProfile from './github/user-profile'
 import Notes from './notes/notes'
 import Rebase from 're-base'
 
-const base = Rebase.createClass('https://github-note-taker.firebaseio.com/');
+const base = Rebase.createClass('https://github-note-taker.firebaseio.com/')
 
 class Profile extends Component {
 
@@ -20,15 +20,23 @@ class Profile extends Component {
       repos: []
     }
   }
-  
-  componentDidMount () {
-    
+
+  init () {
     this.ref = base.syncState(this.props.params.username, {
       context: this,
       asArray: true,
       state: 'notes'
-    });
-    
+    })
+  }
+
+  handleAddNote (note) {
+     this.setState({
+      notes: this.state.notes.push(note)
+    })
+  }
+
+  componentDidMount () {
+    this.init()
   }
 
   componentWillUnmout () {
@@ -45,7 +53,7 @@ class Profile extends Component {
         <Repos username={this.props.params.username} repos={this.state.repos} />
       </div>
       <div className="col-md-4">
-        <Notes username={this.props.params.username} notes={this.state.notes} />
+        <Notes username={this.props.params.username} notes={this.state.notes} addNote={() => this.handleAddNote()}/>
       </div>
     </div>
     )
